@@ -40,6 +40,7 @@ function sidebarGuide() {
             items: [
                 {text: 'MongoDB 介绍', link: "/guide/what-is-mongodb"},
                 {text: "MongoDB 安装", link: "/guide/getting-started"},
+                {text: "MongoDB 数据库操作", link: "/guide/database-operations"},
             ]
         },
     ];
