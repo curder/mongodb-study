@@ -58,7 +58,7 @@ brew services start mongodb-community@6.0
 
         使用下面的命令来重启 MongoDB:
         ```bash
-        bres services restart mongodb-community@6.0
+        brew services restart mongodb-community@6.0
         ```
     4. 卸载 MongoDB
 
