@@ -1,6 +1,4 @@
-# MongoDB 介绍
-
-## MongoDB 介绍
+# 介绍
 
 - MongoDB 是一个功能最丰富的NoSQL非关系数据库。由 C++ 语言编写。
 - MongoDB 本身提供S端存储数据，即 Server ；也提供C端操作处理（如查询等）数据，即 Client 。
