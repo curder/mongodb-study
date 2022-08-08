@@ -12,6 +12,21 @@ db.inventory.insertMany([
 ]);
 ```
 
+::: details MongoDB Shell 运行结果
+```json
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("62f0d05cab3dc4ee4b51f668"),
+    '1': ObjectId("62f0d05cab3dc4ee4b51f669"),
+    '2': ObjectId("62f0d05cab3dc4ee4b51f66a"),
+    '3': ObjectId("62f0d05cab3dc4ee4b51f66b"),
+    '4': ObjectId("62f0d05cab3dc4ee4b51f66c")
+  }
+}
+```
+:::
+
 ## 选择集合中的所有文档
 
 要选择集合中的所有文档，请将一个空文档作为查询过滤器参数传递给 `find` 方法。查询过滤器参数确定选择条件：
@@ -19,6 +34,49 @@ db.inventory.insertMany([
 ```shell
 db.inventory.find( {} )
 ```
+
+::: details MongoDB Shell 运行结果
+
+```json
+[
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f663"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f664"),
+    item: 'notebook',
+    qty: 50,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f665"),
+    item: 'paper',
+    qty: 100,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f666"),
+    item: 'planner',
+    qty: 75,
+    size: { h: 22.85, w: 30, uom: 'cm' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f667"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
 
 该操作对应传统型数据库的如下 SQL 语句:
 
@@ -40,6 +98,28 @@ SELECT * FROM inventory;
 db.inventory.find( { status: "D" } )
 ```
 
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f665"),
+    item: 'paper',
+    qty: 100,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f666"),
+    item: 'planner',
+    qty: 75,
+    size: { h: 22.85, w: 30, uom: 'cm' },
+    status: 'D'
+  }
+]
+```
+:::
+
+
 该操作对应传统型数据库的如下 SQL 语句:
 
 ```sql
@@ -60,6 +140,48 @@ SELECT * FROM inventory WHERE status = "D";
 db.inventory.find( { status: { $in: [ "A", "D" ] } } )
 ```
 
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f663"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f664"),
+    item: 'notebook',
+    qty: 50,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f665"),
+    item: 'paper',
+    qty: 100,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f666"),
+    item: 'planner',
+    qty: 75,
+    size: { h: 22.85, w: 30, uom: 'cm' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f667"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
+
 该操作对应传统型数据库的如下 SQL 语句:
 
 ```sql
@@ -74,7 +196,24 @@ SELECT * FROM inventory WHERE status in ("A", "D");
 
 ```shell
 db.inventory.find( { status: "A", qty: { $lt: 30 } } )
+
+# 等同于
+db.inventory.find( { $and: [ { status: "A" }, { qty: { $lt: 30 } } ] } )
 ```
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f663"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
 
 该操作对应传统型数据库的如下 SQL 语句:
 ```sql
@@ -90,6 +229,35 @@ SELECT * FROM inventory WHERE status = "A" AND qty < 30;
 ```shell
 db.inventory.find( { $or: [ { status: "A" }, { qty: { $lt: 30 } } ] } )
 ```
+
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f663"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f664"),
+    item: 'notebook',
+    qty: 50,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f667"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
 
 该操作对应传统型数据库的如下 SQL 语句:
 
@@ -108,10 +276,39 @@ db.inventory.find( {
 } )
 ```
 
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f663"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0b2a1ab3dc4ee4b51f667"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
+
 该操作对应传统型数据库的如下 SQL 语句:
 
 ```sql
 SELECT * FROM inventory WHERE status = "A" AND ( qty < 30 OR item LIKE "p%");
+```
+
+## 自定义查询
+
+mongo shell 是一个 js 的执行环境 使用 `$where` 写一个函数，返回满足条件的数据。
+
+```shell
+db.inventory.find( { $where: function() { return this.qty % 2 == 50; } } )
 ```
 
 
