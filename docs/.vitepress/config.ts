@@ -43,6 +43,11 @@ function sidebarGuide() {
                 {text: "MongoDB 数据库操作", link: "/guide/database-operations"},
                 {text: "MongoDB 集合操作", link: "/guide/collection-operations"},
                 {text: "MongoDB 数据类型", link: "/guide/bson-types"},
+                {text: "MongoDB 增加文档", link: "/guide/document-insert"},
+                {text: "MongoDB 查询文档", link: "/guide/document-query"},
+                {text: "MongoDB 更新文档", link: "/guide/document-update"},
+                {text: "MongoDB 删除文档", link: "/guide/document-delete"},
+                {text: "MongoDB 操作符", link: "/guide/operators"},
             ]
         },
     ];
