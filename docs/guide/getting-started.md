@@ -12,6 +12,9 @@ MongoDB 是一个跨平台的 NoSQL 数据库，支持常见的操作系统上�
 
 1. 添加 MongoDB 存储库
     macOS 的默认存储库中不存在 `mongodb-org` 软件包。但是，MongoDB 维护一个专用的存储库。
+    
+    访问 MongoDB 文档的[在 macOS 上安装](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/)部分查看更多详情。
+
 
     ```bash
     brew tap mongodb/brew
