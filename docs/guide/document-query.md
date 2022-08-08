@@ -303,7 +303,7 @@ db.inventory.find( {
 SELECT * FROM inventory WHERE status = "A" AND ( qty < 30 OR item LIKE "p%");
 ```
 
-## 自定义查询
+## 自定义查询条件
 
 mongo shell 是一个 js 的执行环境 使用 `$where` 写一个函数，返回满足条件的数据。
 
@@ -311,5 +311,243 @@ mongo shell 是一个 js 的执行环境 使用 `$where` 写一个函数，返�
 db.inventory.find( { $where: function() { return this.qty % 2 == 50; } } )
 ```
 
-
 更多查询操作可以[查看官方文档](https://www.mongodb.com/docs/manual/tutorial/query-documents/)。
+
+## `limit` 方法
+
+用于读取指定数量的文档
+
+```shell
+# db.集合名称.find().limit(NUMBER)
+
+db.inventory.find().limit(2) # 查询2条数据
+```
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f668"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f669"),
+    item: 'notebook',
+    qty: 50,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'A'
+  }
+]
+```
+:::
+
+
+## `skip` 方法
+
+
+用于跳过指定数量的⽂档，返回其他文档列表
+
+```shell
+# db.集合名称.find().skip(NUMBER)
+db.inventory.find().skip(2)
+```
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f66a"),
+    item: 'paper',
+    qty: 100,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f66b"),
+    item: 'planner',
+    qty: 75,
+    size: { h: 22.85, w: 30, uom: 'cm' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f66c"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
+
+
+## 投影
+
+默认情况下，MongoDB 中的查询返回匹配文档中的所有字段。要限制 MongoDB 发送到应用程序的数据量，您可以包含一个投影文档来指定或限制要返回的字段。
+
+使用 mongosh 中的 `db.collection.find()` 方法进行投影的查询操作示例。
+
+### 返回匹配文档中的所有字段
+
+如果不指定投影文档，则 db.collection.find() 方法会返回匹配文档中的所有字段。
+
+以下示例返回 `inventory` 集合中 `status` 等于 `"A"` 的所有文档的所有字段：
+
+```shell
+db.inventory.find( { status: "A" } )
+```
+
+该操作对应传统型数据库的如下 SQL 语句:
+
+```sql
+SELECT * from inventory WHERE status = "A"
+```
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f668"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f669"),
+    item: 'notebook',
+    qty: 50,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f66c"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
+
+### 仅返回指定字段和 `_id` 字段
+
+通过在投影文档中将 `<field>` 设置为 `1`，投影可以显式包含多个字段。
+
+以下操作返回与查询匹配的所有文档。在结果集中，只有`item`、`status`和默认情况下的 `_id` 字段在匹配文档中返回。
+
+```shell
+db.inventory.find( { status: "A" }, { item: 1, status: 1 } )
+```
+
+该操作对应传统型数据库的如下 SQL 语句:
+```sql
+SELECT _id, item, status from inventory WHERE status = "A";
+```
+
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f668"),
+    item: 'journal',
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f669"),
+    item: 'notebook',
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f66c"),
+    item: 'postcard',
+    status: 'A'
+  }
+]
+```
+:::
+
+
+### 抑制 `_id` 字段
+
+
+可以通过在投影中将 `_id` 字段设置为 `0` 从结果中删除它，如下例所示：
+
+```shell
+db.inventory.find( { status: "A" }, { item: 1, status: 1, _id: 0 } )
+```
+
+该操作对应传统型数据库的如下 SQL 语句:
+```sql
+SELECT item, status from inventory WHERE status = "A";
+```
+
+> 除了 `_id` 字段，不允许在投影文档中组合包含和排除语句，比如 `{item: 0, status: 1}` 是不允许的，如果不需该字段则不提供即可。
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  { item: 'journal', status: 'A' },
+  { item: 'notebook', status: 'A' },
+  { item: 'postcard', status: 'A' }
+]
+```
+:::
+
+### 返回除排除字段之外的所有字段
+
+
+可以使用投影排除特定字段，而不是列出要在匹配文档中返回的字段。
+
+以下示例返回匹配文档中除状态和库存字段之外的所有字段：
+
+
+```shell
+db.inventory.find( { status: "A" }, { status: 0, qty: 0, _id: 0 } )
+```
+
+> 除了 `_id` 字段，您不能在投影文档中组合包含和排除语句。
+
+
+该操作对应传统型数据库的如下 SQL 语句:
+
+```sql
+SELECT item, size from inventory WHERE status = "A";
+```
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  { item: 'journal', size: { h: 14, w: 21, uom: 'cm' } },
+  { item: 'notebook', size: { h: 8.5, w: 11, uom: 'in' } },
+  { item: 'postcard', size: { h: 10, w: 15.25, uom: 'cm' } }
+]
+```
+:::
+
+
+### 返回嵌入文档中的特定字段
+
+可以返回嵌入文档中的特定字段。使用点表示法来引用嵌入字段并在投影文档中设置为 `1`。
+
+以下示例返回：
+   - `_id` 字段（默认返回），
+   - `item` 字段
+   - `status` 字段
+   - `size` 文档中的 `uom` 字段
+
+`uom` 字段仍然嵌入在 `size` 文档中。
+
+```shell
+db.inventory.find(
+   { status: "A" },
+   { item: 1, status: 1, "size.uom": 1 }
+)
+```
+
+还可以使用嵌套形式指定嵌入字段，例如 `{item:1，status: 1，size:{ uom:1}}`。
