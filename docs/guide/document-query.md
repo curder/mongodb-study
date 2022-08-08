@@ -551,3 +551,31 @@ db.inventory.find(
 ```
 
 还可以使用嵌套形式指定嵌入字段，例如 `{item:1，status: 1，size:{ uom:1}}`。
+
+
+::: details MongoDB Shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f668"),
+    item: 'journal',
+    size: { uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f669"),
+    item: 'notebook',
+    size: { uom: 'in' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f0d05cab3dc4ee4b51f66c"),
+    item: 'postcard',
+    size: { uom: 'cm' },
+    status: 'A'
+  }
+]
+```
+:::
+
+更多投影的查询操作可以[查看官方文档](https://www.mongodb.com/docs/manual/tutorial/project-fields-from-query-results/#return-all-fields-in-matching-documents)。
