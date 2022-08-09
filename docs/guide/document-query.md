@@ -579,3 +579,81 @@ db.inventory.find(
 :::
 
 更多投影的查询操作可以[查看官方文档](https://www.mongodb.com/docs/manual/tutorial/project-fields-from-query-results/#return-all-fields-in-matching-documents)。
+
+
+
+## 数据排序
+
+
+对查询的文档进行排序，使用 `sort()` 方法，它用于对查询结果按照指定的字段进行排序。
+
+```shell
+db.collection.find().sort( { 字段: 1, ... } )
+```
+
+参数值 `1` 为升序排列；参数 `-1` 为降序排列。
+
+```shell
+# 根据 `size.h` 降序，再根据 `qty` 升序
+db.inventory.find().sort({'size.h': -1, qty: 1})
+```
+
+::: details MongoDB shell 运行结果
+```json
+[
+  {
+    _id: ObjectId("62f233b7ab3dc4ee4b51f684"),
+    item: 'planner',
+    qty: 75,
+    size: { h: 22.85, w: 30, uom: 'cm' },
+    status: 'D'
+  },
+  {
+    _id: ObjectId("62f233b7ab3dc4ee4b51f681"),
+    item: 'journal',
+    qty: 25,
+    size: { h: 14, w: 21, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f233b7ab3dc4ee4b51f685"),
+    item: 'postcard',
+    qty: 45,
+    size: { h: 10, w: 15.25, uom: 'cm' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f233b7ab3dc4ee4b51f682"),
+    item: 'notebook',
+    qty: 50,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'A'
+  },
+  {
+    _id: ObjectId("62f233b7ab3dc4ee4b51f683"),
+    item: 'paper',
+    qty: 100,
+    size: { h: 8.5, w: 11, uom: 'in' },
+    status: 'D'
+  }
+]
+```
+:::
+
+
+## 统计个数
+
+方法 `count()` 用于统计结果集中文档条数。
+
+```shell
+db.集合名称.find({条件}).count()
+# 或者
+db.集合名称.count({条件})
+```
+
+```shell
+db.inventory.find({status: 'A'}).count() # 3
+db.inventory.count({status: 'A'}) # 3
+db.inventory.count({status: 'A', qty: {$gt: 40}}) # 2
+```
+
