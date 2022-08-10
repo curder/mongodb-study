@@ -48,6 +48,7 @@ function sidebarGuide() {
                 {text: "查询文档", link: "/guide/document-query"},
                 {text: "更新文档", link: "/guide/document-update"},
                 {text: "删除文档", link: "/guide/document-delete"},
+                {text: "聚合操作", link: "/guide/aggregation-operations"},
             ]
         },
     ];
