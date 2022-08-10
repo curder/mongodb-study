@@ -50,7 +50,97 @@ db.orders.insertMany( [
 ] )
 ```
 
-### 计算总订单数量
+## 常用管道命令
+在 MongoDB 中，⽂档处理完毕后， 通过管道进⾏下⼀次处理 常用管道命令如下：
+
+- `$group`： 将集合中的⽂档分组， 可⽤于统计结果
+- `$match`： 过滤数据， 只输出符合条件的⽂档
+- `$project`： 修改输⼊⽂档的结构， 如重命名、 增加、 删除字段、 创建计算结果
+- `$sort`： 将输⼊⽂档排序后输出
+- `$limit`： 限制聚合管道返回的⽂档数
+- `$skip`： 跳过指定数量的⽂档， 并返回余下的⽂档
+
+## 常用表达式
+
+表达式：处理输⼊⽂档并输出 语法：`表达式:'$列名'` 常⽤表达式:
+
+- `$sum`： 计算总和，$sum: 1 表示以⼀倍计数
+- `$avg`： 计算平均值
+- `$min`： 获取最⼩值
+- `$max`： 获取最⼤值
+- `$push`：在结果⽂档中插⼊值到⼀个数组中
+
+## $group
+
+### 按照某个字段进行分组
+
+```shell
+db.orders.aggregate( {
+  // 通过 size 分组并计算总数，quantity总数，quantity平均数和所有关联的name列表
+  $group: {
+    _id: "$size",
+    sum: { $sum: 1 },
+    sum_quantity: { $sum: "$quantity" },
+    avg_quantity: { $avg: "$quantity" },
+    names: { $push: "$name" }
+  }
+} )
+```
+- `_id` 表示分组的依据，按照哪个字段进行分组，需要使用 `$size` 表示选择这个字段进行分组
+- `$sum: 1` 表示把每条数据作为1进行统计，统计的是该分组下面数据的条数
+- `{$avg: "$quantity"}` 表示求所有 `quantity` 的平均值
+- `{$push: "$name"}` 在结果⽂档中插⼊ `$name` 值到⼀个数组中
+
+
+::: details MongoDB shell 运行结果
+```json
+[
+  {
+    _id: 'small',
+    sum: 3,
+    sum_quantity: 35,
+    avg_quantity: 11.666666666666666,
+    names: [ 'Pepperoni', 'Cheese', 'Vegan' ]
+  },
+  {
+    _id: 'large',
+    sum: 2,
+    sum_quantity: 40,
+    avg_quantity: 20,
+    names: [ 'Pepperoni', 'Cheese' ]
+  },
+  {
+    _id: 'medium',
+    sum: 3,
+    sum_quantity: 80,
+    avg_quantity: 26.666666666666668,
+    names: [ 'Pepperoni', 'Cheese', 'Vegan' ]
+  }
+]
+```
+:::
+
+
+### group by null
+
+当需要统计整个文档的时候，`$group` 的另一种用途就是把整个文档分为一组进行统计。
+
+
+```shell
+db.orders.aggregate( {
+  $group: { _id: null, counter: { $sum: 1 } }
+} )
+
+# [ { _id: null, counter: 8 } ]
+```
+
+注意：`_id:null` 表示不指定分组的字段，即统计整个文档，此时获取的 `counter` 表示整个文档的个数。
+
+
+
+
+
+## 计算总订单数量
 
 - 返回按 pizzas 名称分组的 pizza 的总订单数量：
 
@@ -105,7 +195,7 @@ db.orders.insertMany( [
     ```
     :::
 
-### 计算总订单价值和平均订单数量
+## 计算总订单价值和平均订单数量
 
 
 以下示例计算两个日期之间的总订单价值和平均订单数量：
