@@ -43,7 +43,7 @@ function sidebarGuide() {
                 {text: "数据库操作", link: "/guide/database-operations"},
                 {text: "集合操作", link: "/guide/collection-operations"},
                 {text: "数据类型", link: "/guide/bson-types"},
-                {text: "操作符", link: "/guide/operators"},
+                {text: "查询选择器", link: "/guide/operators"},
                 {text: "插入文档", link: "/guide/document-insert"},
                 {text: "查询文档", link: "/guide/document-query"},
                 {text: "更新文档", link: "/guide/document-update"},
