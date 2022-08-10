@@ -137,6 +137,26 @@ db.orders.aggregate( {
 注意：`_id:null` 表示不指定分组的字段，即统计整个文档，此时获取的 `counter` 表示整个文档的个数。
 
 
+## $match
+
+`$match` 用于进行数据的过滤，是在能够在聚合操作中使用的命令，和 `find` 方法的区别在于 `$match` 操作可以把结果交给下一个管道处理，而 `find` 方法不行。
+
+```shell
+ db.orders.aggregate( [
+  { $match: { quantity: { $eq: 10 } } },
+  { $group: { _id: "$name", name: { $push: "$name" } } }
+] )
+```
+
+::: details MongoDB shell 运行结果
+```json
+[
+  { _id: 'Pepperoni', name: [ 'Pepperoni' ] },
+  { _id: 'Cheese', name: [ 'Cheese' ] },
+  { _id: 'Vegan', name: [ 'Vegan', 'Vegan' ] }
+]
+```
+:::
 
 
 
