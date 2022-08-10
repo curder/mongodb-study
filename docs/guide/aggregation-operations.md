@@ -264,6 +264,77 @@ db.orders.aggregate( { $sort: {price: -1} } )
 ```
 :::
 
+## $skip 和 $limit
+
+
+- `$limit` 限制返回数据的条数
+- `$skip` 跳过指定的文档数，并返回剩下的文档数
+
+
+- 查询前两个文档
+  ```shell
+  db.orders.aggregate( { $limit: 2 } )
+  ```
+
+  ::: details MongoDB shell 运行结果
+  ```json
+  [
+    {
+      _id: 0,
+      name: 'Pepperoni',
+      size: 'small',
+      price: 19,
+      quantity: 10,
+      date: ISODate("2021-03-13T08:14:30.000Z")
+    },
+    {
+      _id: 1,
+      name: 'Pepperoni',
+      size: 'medium',
+      price: 20,
+      quantity: 20,
+      date: ISODate("2021-03-13T09:13:24.000Z")
+    }
+  ]
+  ```
+  :::
+
+- 查询从第5条开始的订单信息
+
+  ```shell
+  db.orders.aggregate( { $skip: 5 } )
+  ```
+
+  ::: details MongoDB shell 运行结果
+  ```json
+  [
+    {
+      _id: 5,
+      name: 'Cheese',
+      size: 'large',
+      price: 14,
+      quantity: 10,
+      date: ISODate("2022-01-12T05:08:13.000Z")
+    },
+    {
+      _id: 6,
+      name: 'Vegan',
+      size: 'small',
+      price: 17,
+      quantity: 10,
+      date: ISODate("2021-01-13T05:08:13.000Z")
+    },
+    {
+      _id: 7,
+      name: 'Vegan',
+      size: 'medium',
+      price: 18,
+      quantity: 10,
+      date: ISODate("2021-01-13T05:10:13.000Z")
+    }
+  ]
+  ```
+  :::
 
 ## 计算总订单数量
 
